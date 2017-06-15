@@ -15,7 +15,7 @@ function! Send_keys_to_Tmux(keys)
     call <SID>Tmux_Vars()
   endif
 
-  call system("tmux send-keys -t " . s:tmux_target() . " " . a:keys)
+  call system("tmux send-keys -t " . g:tslime['pane_id'] . " " . a:keys)
 endfunction
 
 " Main function.
@@ -121,6 +121,8 @@ function! s:Tmux_Vars()
       let g:tslime['pane'] = panes[0]
     endif
   endif
+
+  let g:tslime['pane_id'] = split(system('tmux list-panes -a | sed -e "s/^' . g:tslime['session'] . ':' . g:tslime['window'] . '\.' . g:tslime['pane'] . ':.*].*] \(%\d*\)/\1/g;tx" -e "d" -e ":x"'), "\n")[0]
 endfunction
 
 vnoremap <silent> <Plug>SendSelectionToTmux "ry :call Send_to_Tmux(@r)<CR>
